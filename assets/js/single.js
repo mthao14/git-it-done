@@ -1,5 +1,25 @@
 var issueContainerEl = document.querySelector("#issues-container");
 var limitWarningEl = document.querySelector("#limit-warning");
+var repoNameEl = document.querySelector("#repo-name");
+
+var getRepoName = function() {
+    // grabs repo name from url query string
+    var queryString = document.location.search;
+    var repoName = queryString.split("=")[1]; // we use [1] to get the second element from the substring from the split method
+
+    // conditional statement to check if repo name exists, this will display the repo name and make the fetch call if repo name exists
+    if(repoName) {
+        // displays repo name on the page
+        repoNameEl.textContent = repoName;
+
+        getRepoIssues(repoName);
+    }
+    else { 
+        // replace method is used to redirect user back to the previous url (homepage)
+        document.location.replace("./index.html");
+    }
+
+}
 
 // this function takes "repo" as a parameter
 var getRepoIssues = function(repo) {
@@ -16,12 +36,12 @@ var getRepoIssues = function(repo) {
 
             // check if api has paginated issues
             if (response.headers.get("Link")) {
-                displayWarning(repo)
+                displayWarning(repo);
             }
           });
         }
         else {
-            alert("There was a problem with your request!");
+            document.location.replace("./index.html");
         }
     });
 };
@@ -77,5 +97,6 @@ var displayIssues = function(issues) {
         limitWarningEl.appendChild(linkEl);
     };
 
-getRepoIssues("facebook/time");
+getRepoName();
+
 
